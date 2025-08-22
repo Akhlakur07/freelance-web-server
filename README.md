@@ -190,7 +190,7 @@ freelance-server/
 1. **Clone the repository**
 
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/Akhlakur07/freelance-web-server.git
    cd freelance-web/freelance-server
    ```
 
@@ -340,8 +340,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-- **Project Link:** [https://github.com/yourusername/freelance-web](https://github.com/yourusername/freelance-web)
-- **Frontend Demo:** [https://freelance-auth-96883.web.app/](https://freelance-auth-96883.web.app/)
+- **Frontend Repository:** [https://github.com/Akhlakur07/freelance-web-client](https://github.com/Akhlakur07/freelance-web-client)
+- **Live site:** [https://freelance-auth-96883.web.app/](https://freelance-auth-96883.web.app/)
 
 ## 🙏 Acknowledgments
 
