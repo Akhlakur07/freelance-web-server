@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion, ObjectId  } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -235,6 +235,73 @@ async function run() {
           return res.status(500).json({ error: "Failed to delete task" });
 
         return res.json({ ok: true, id });
+      } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    });
+
+    app.patch("/tasks/:id", async (req, res) => {
+      try {
+        if (!tasksCollection)
+          return res.status(503).json({ error: "Database not ready" });
+
+        const email = String(req.query.email || "").toLowerCase();
+        if (!email) return res.status(400).json({ error: "Email is required" });
+
+        let _id;
+        try {
+          _id = new ObjectId(req.params.id);
+        } catch {
+          return res.status(400).json({ error: "Invalid task id" });
+        }
+
+        const existing = await tasksCollection.findOne({ _id });
+        if (!existing) return res.status(404).json({ error: "Task not found" });
+
+        if ((existing.author?.email || "") !== email) {
+          return res
+            .status(403)
+            .json({ error: "Not allowed to update this task" });
+        }
+
+        const { title, category, description, deadline, budget } =
+          req.body || {};
+
+        // Basic validation (mirror of POST /tasks)
+        if (!title || !String(title).trim())
+          return res.status(400).json({ error: "Title is required" });
+        if (!category)
+          return res.status(400).json({ error: "Category is required" });
+        if (!description || !String(description).trim())
+          return res.status(400).json({ error: "Description is required" });
+        if (!deadline)
+          return res.status(400).json({ error: "Deadline is required" });
+        if (budget === undefined || budget === null || isNaN(Number(budget)))
+          return res.status(400).json({ error: "Budget must be a number" });
+
+        const deadlineDate = new Date(deadline);
+        if (isNaN(deadlineDate.getTime()))
+          return res
+            .status(400)
+            .json({ error: "Deadline must be a valid date" });
+
+        const updateDoc = {
+          $set: {
+            title: String(title).trim(),
+            category,
+            description: String(description).trim(),
+            deadline: deadlineDate,
+            budget: Number(budget),
+            updatedAt: new Date(),
+          },
+        };
+
+        const r = await tasksCollection.updateOne({ _id }, updateDoc);
+        if (!r.matchedCount)
+          return res.status(404).json({ error: "Task not found" });
+
+        return res.json({ ok: true, id: _id.toString() });
       } catch (e) {
         console.error(e);
         res.status(500).json({ error: "Internal server error" });
