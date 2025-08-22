@@ -308,6 +308,39 @@ async function run() {
       }
     });
 
+    app.post("/tasks/:id/bid", async (req, res) => {
+      try {
+        if (!tasksCollection)
+          return res.status(503).json({ error: "Database not ready" });
+
+        let _id;
+        try {
+          _id = new ObjectId(req.params.id);
+        } catch {
+          return res.status(400).json({ error: "Invalid task id" });
+        }
+
+        // 1) Increment
+        const upd = await tasksCollection.updateOne(
+          { _id },
+          { $inc: { bidsCount: 1 }, $set: { updatedAt: new Date() } }
+        );
+        if (!upd.matchedCount)
+          return res.status(404).json({ error: "Task not found" });
+
+        // 2) Read back the new count
+        const doc = await tasksCollection.findOne(
+          { _id },
+          { projection: { bidsCount: 1 } }
+        );
+
+        return res.json({ ok: true, bidsCount: doc?.bidsCount ?? 0 });
+      } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    });
+
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
