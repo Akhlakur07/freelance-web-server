@@ -338,10 +338,9 @@ const client = new MongoClient(uri, {
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 📞 Contact
-
-- **Frontend Repository:** [https://github.com/Akhlakur07/freelance-web-client](https://github.com/Akhlakur07/freelance-web-client)
-- **Live site:** [https://freelance-auth-96883.web.app/](https://freelance-auth-96883.web.app/)
+##
+**Frontend Repository:** [https://github.com/Akhlakur07/freelance-web-client](https://github.com/Akhlakur07/freelance-web-client)
+##
 
 ## 🙏 Acknowledgments
 
