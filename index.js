@@ -22,8 +22,8 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    await client.connect();
-    await client.db("admin").command({ ping: 1 });
+    // await client.connect();
+    // await client.db("admin").command({ ping: 1 });
     const userCollection = client.db("freeDB").collection("users");
     const tasksCollection = client.db("freeDB").collection("tasks");
 
